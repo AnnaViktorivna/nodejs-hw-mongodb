@@ -5,15 +5,6 @@ import { env } from './utils/env.js';
 import { getAllContacts } from './services/servicesContacts.js';
 import { getContactById } from './services/servicesContacts.js';
 
-// Read envariables variables PORT
-// const portValue = env('PORT', 3000);
-// const PORT = parseInt(env('PORT', 3000), 10);
-// if (isNaN(PORT) || PORT < 0 || PORT > 65535) {
-//   throw new RangeError(
-//     `Invalid PORT: ${PORT}. Port should be a number between 0 and 65535.`,
-//   );
-// }
-
 export function setupServer() {
   const app = express();
 
@@ -38,26 +29,28 @@ export function setupServer() {
     });
   });
 
-  app.get('/contacts/:contactID', async (req, res) => {
-    const { contactID } = req.params;
-    const contact = await getContactById(contactID);
-
+  app.get('/contacts/:contactId', async (req, res) => {
+    const { contactId } = req.params;
+    const contact = await getContactById(contactId);
+    if (!contact) {
+      return res.status(400).json({
+        status: 400,
+        message: `Contact with id ${contactId} not found!`,
+      });
+    }
     res.status(200).json({
+      status: 200,
+      message: `Successfully found contact with id ${contactId}!`,
       data: contact,
     });
   });
 
-  app.use('*', (req, res, next) => {
-    res.status(404).json({
-      message: 'Not found',
-    });
+  app.use((req, res) => {
+    res.status(404).send('Oops! Route was not found!');
   });
 
-  app.use((er, req, res, next) => {
-    res.status(500).json({
-      message: 'Something went wrong',
-      error: err.message,
-    });
+  app.use((error, req, res, next) => {
+    res.status(500).send(error.message);
   });
 
   const PORT = env('PORT', 3000);
