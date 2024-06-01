@@ -32,6 +32,7 @@ export function setupServer() {
   app.get('/contacts/:contactId', async (req, res) => {
     const { contactId } = req.params;
     const contact = await getContactById(contactId);
+
     if (!contact) {
       return res.status(400).json({
         status: 400,
@@ -57,7 +58,7 @@ export function setupServer() {
 
   app.listen(PORT, () => {
     console.log(
-      `Server is running on port ${PORT}. Please open http://localhost:${PORT} in your browser.`,
+      `Server is running on port ${PORT}. Please open http://localhost:${PORT}/contacts/  in your browser.`,
     );
   });
 }
