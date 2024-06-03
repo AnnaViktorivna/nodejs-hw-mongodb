@@ -16,3 +16,8 @@ export const getContactById = async (contactId) => {
     });
   } else return contact;
 };
+
+export const createContact = async (payload) => {
+  const contact = await ContactsSchema.create(payload);
+  return contact;
+};

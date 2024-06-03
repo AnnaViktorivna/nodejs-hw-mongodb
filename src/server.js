@@ -9,8 +9,16 @@ import { notFoundHandler } from './middlewares/notFoundHandler.js';
 export function setupServer() {
   const app = express();
 
-  app.use(express.json());
   app.use(cors());
+
+  app.use(
+    express.json(
+      express.json({
+        type: ['application/json'],
+        limit: '100kb',
+      }),
+    ),
+  );
 
   app.use(
     pino({
