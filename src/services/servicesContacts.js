@@ -21,3 +21,30 @@ export const createContact = async (payload) => {
   const contact = await ContactsSchema.create(payload);
   return contact;
 };
+
+export const updateContact = async (contactId, payload, options = {}) => {
+  const rawResult = await ContactsSchema.findOneAndUpdate(
+    { _id: contactId },
+    payload,
+    {
+      new: true,
+      includeResultMetadata: true,
+      ...options,
+    },
+  );
+
+  if (!rawResult || !rawResult.value) return null;
+
+  return {
+    contactId: rawResult.value,
+    isNew: Boolean(rawResult?.lastErrorObject?.upserted),
+  };
+};
+
+export const deleteContact = async (contactId) => {
+  const contact = await ContactsSchema.findOneAndDelete({
+    _id: contactId,
+  });
+
+  return contact;
+};
