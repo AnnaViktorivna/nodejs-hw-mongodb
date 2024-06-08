@@ -22,7 +22,7 @@ export const getContactsByIDController = async (req, res, next) => {
   const { contactId } = req.params;
 
   if (!isValidObjectId(contactId)) {
-    next(createHttpError(400, `Contact with id ${contactId} not found!`));
+    next(createHttpError(404, `Contact with id ${contactId} not found!`));
     return;
   }
 
@@ -72,7 +72,7 @@ export const deleteContactController = async (req, res, next) => {
   const contact = await deleteContact(contactId);
 
   if (!contact) {
-    next(createHttpError(404, 'Contact not found'));
+    next(createHttpError(404, `Contact  not found!`));
     return;
   }
 

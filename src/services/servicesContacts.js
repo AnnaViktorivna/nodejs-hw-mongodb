@@ -42,9 +42,13 @@ export const updateContact = async (contactId, payload, options = {}) => {
 };
 
 export const deleteContact = async (contactId) => {
-  const contact = await ContactsSchema.findOneAndDelete({
+  const contact = await ContactsSchema.findByIdAndDelete({
     _id: contactId,
   });
-
-  return contact;
+  if (!mongoose.Types.ObjectId.isValid(contactId)) {
+    return res.status(404).json({
+      status: 404,
+      message: `Contact with id ${contactId} not found!`,
+    });
+  } else return contact;
 };
