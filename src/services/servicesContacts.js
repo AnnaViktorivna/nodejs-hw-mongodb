@@ -9,12 +9,16 @@ export const getAllContacts = async () => {
 
 export const getContactById = async (contactId) => {
   const contact = await ContactsSchema.findById(contactId);
-  if (!mongoose.Types.ObjectId.isValid(contactId)) {
-    return res.status(404).json({
-      status: 404,
-      message: `Contact with id ${contactId} not found!`,
-    });
-  } else return contact;
+  if (!contact) {
+    throw createHttpError(404, 'Contact not found');
+  }
+  return contact;
+  // if (!mongoose.Types.ObjectId.isValid(contactId)) {
+  //   return res.status(404).json({
+  //     status: 404,
+  //     message: `Contact with id ${contactId} not found!`,
+  //   });
+  // } else return contact;
 };
 
 export const createContact = async (payload) => {
@@ -23,7 +27,7 @@ export const createContact = async (payload) => {
 };
 
 export const updateContact = async (contactId, payload, options = {}) => {
-  const rawResult = await ContactsSchema.findOneAndUpdate(
+  const rawResult = await ContactsSchema.findByIdAndUpdate(
     { _id: contactId },
     payload,
     {
@@ -33,11 +37,13 @@ export const updateContact = async (contactId, payload, options = {}) => {
     },
   );
 
-  if (!rawResult || !rawResult.value) return null;
+  if (!rawResult || !rawResult.value) {
+    throw createHttpError(404, 'Contact not found');
+  }
 
   return {
-    contactId: rawResult.value,
-    isNew: Boolean(rawResult?.lastErrorObject?.upserted),
+    contact: rawResult.value,
+    isNew: !rawResult?.lastErrorObject?.updatedExisting,
   };
 };
 
