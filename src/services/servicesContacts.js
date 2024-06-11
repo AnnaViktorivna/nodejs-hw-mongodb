@@ -1,3 +1,4 @@
+import createHttpError from 'http-errors';
 import { ContactsSchema } from '../db/contact.js';
 
 import mongoose from 'mongoose';
@@ -18,7 +19,8 @@ export const getContactById = async (contactId) => {
   //     status: 404,
   //     message: `Contact with id ${contactId} not found!`,
   //   });
-  // } else return contact;
+  // } else
+  // return contact;
 };
 
 export const createContact = async (payload) => {

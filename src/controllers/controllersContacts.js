@@ -1,5 +1,5 @@
 import createHttpError from 'http-errors';
-import { isValidObjectId } from 'mongoose';
+import { Types } from 'mongoose';
 import {
   createContact,
   deleteContact,
@@ -7,6 +7,7 @@ import {
   getContactById,
   updateContact,
 } from '../services/servicesContacts.js';
+import { ContactsSchema } from '../db/contact.js';
 
 export const getContactsController = async (req, res) => {
   const contacts = await getAllContacts();
@@ -18,20 +19,14 @@ export const getContactsController = async (req, res) => {
   });
 };
 
-export const getContactsByIDController = async (req, res, next) => {
+export const getContactsByIDController = async (req, res) => {
   const { contactId } = req.params;
 
-  if (!isValidObjectId(contactId)) {
-    next(createHttpError(404, `Contact with id ${contactId} not found!`));
-    return;
-  }
+  // if (!Types.ObjectId.isValid(contactId)) {
+  //   throw createHttpError(400, 'Id is not found!');
+  // }
 
   const contact = await getContactById(contactId);
-
-  if (!contact) {
-    next(createHttpError(404, `Contact  not found!`));
-    return;
-  }
 
   res.status(200).json({
     status: 200,
@@ -42,7 +37,7 @@ export const getContactsByIDController = async (req, res, next) => {
 
 export const createContactController = async (req, res) => {
   const contact = await createContact(req.body);
-  console.log(contact);
+  // console.log(contact);
   res.status(201).json({
     status: 201,
     message: `Successfully created a contact!`,
