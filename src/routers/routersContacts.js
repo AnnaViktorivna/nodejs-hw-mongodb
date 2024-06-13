@@ -10,6 +10,8 @@ import {
 } from '../controllers/controllersContacts.js';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 import { validateId } from '../middlewares/validateId.js';
+import { validateBody } from '../middlewares/validateBody.js';
+import { createContactSchema } from '../validation/createContactSchema.js';
 
 const router = Router();
 
@@ -24,7 +26,7 @@ router.get(
 );
 router.post(
   '/contacts',
-
+  validateBody(createContactSchema),
   ctrlWrapper(createContactController),
 );
 router.patch(
