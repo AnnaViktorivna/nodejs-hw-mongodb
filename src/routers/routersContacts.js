@@ -12,6 +12,7 @@ import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 import { validateId } from '../middlewares/validateId.js';
 import { validateBody } from '../middlewares/validateBody.js';
 import { createContactSchema } from '../validation/createContactSchema.js';
+import { updateContactSchema } from '../validation/updateContactSchema.js';
 
 const router = Router();
 
@@ -31,7 +32,7 @@ router.post(
 );
 router.patch(
   '/contacts/:contactId',
-
+  validateBody(updateContactSchema),
   ctrlWrapper(patchContactController),
 );
 router.delete(
