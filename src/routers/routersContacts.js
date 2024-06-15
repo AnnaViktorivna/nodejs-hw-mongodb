@@ -16,27 +16,27 @@ import { updateContactSchema } from '../validation/updateContactSchema.js';
 
 const router = Router();
 
-router.use('/contacts/:contactId', validateId('contactId'));
+router.use('/:contactId', validateId('contactId'));
 
-router.get('/contacts', ctrlWrapper(getContactsController));
+router.get('/', ctrlWrapper(getContactsController));
 
 router.get(
-  '/contacts/:contactId',
+  '/:contactId',
 
   ctrlWrapper(getContactsByIDController),
 );
 router.post(
-  '/contacts',
+  '/',
   validateBody(createContactSchema),
   ctrlWrapper(createContactController),
 );
 router.patch(
-  '/contacts/:contactId',
+  '/:contactId',
   validateBody(updateContactSchema),
   ctrlWrapper(patchContactController),
 );
 router.delete(
-  '/contacts/:contactId',
+  '/:contactId',
 
   ctrlWrapper(deleteContactController),
 );
