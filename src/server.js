@@ -5,11 +5,13 @@ import { env } from './utils/env.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 import { notFoundHandler } from './middlewares/notFoundHandler.js';
 import rootRouter from './routers/index.js';
+import cookieParser from 'cookie-parser';
 
 export function setupServer() {
   const app = express();
 
   app.use(cors());
+  app.use(cookieParser());
 
   app.use(
     express.json(

@@ -30,7 +30,7 @@ export const getAllContacts = async ({
 
   const paginationInfo = createPaginationInfo(page, perPage, contactCount);
 
-  return { contacts, ...paginationInfo };
+  return { data: contacts, ...paginationInfo };
 };
 
 export const getContactById = async (contactId) => {
