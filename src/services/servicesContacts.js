@@ -15,14 +15,18 @@ export const getAllContacts = async ({
   perPage = 5,
   sortBy = '_id',
   sortOrder = 'asc',
+  userId,
 }) => {
   const skip = perPage * (page - 1);
   // const contactCount = await ContactsSchema.find().countDocuments();
   // const contacts = await ContactsSchema.find().skip(skip).limit(perPage);
 
+  // const contactFilter = ContactsSchema.find();
+  // contactFilter.where('userId').equals(userId);
+
   const [contactCount, contacts] = await Promise.all([
-    ContactsSchema.find().countDocuments(),
-    ContactsSchema.find()
+    ContactsSchema.find({ userId }).countDocuments(),
+    ContactsSchema.find({ userId })
       .skip(skip)
       .limit(perPage)
       .sort({ [sortBy]: sortOrder }),
@@ -33,22 +37,30 @@ export const getAllContacts = async ({
   return { data: contacts, ...paginationInfo };
 };
 
-export const getContactById = async (contactId) => {
-  const contact = await ContactsSchema.findById(contactId);
+export const getContactById = async (contactId, userId) => {
+  const contact = await ContactsSchema.findOne({
+    _id: contactId,
+    userId: userId,
+  });
   if (!contact) {
     throw createHttpError(404, 'Contact not found');
   }
   return contact;
 };
 
-export const createContact = async (payload) => {
-  const contact = await ContactsSchema.create(payload);
+export const createContact = async (payload, userId) => {
+  const contact = await ContactsSchema.create({ ...payload, userId });
   return contact;
 };
 
-export const updateContact = async (contactId, payload, options = {}) => {
+export const updateContact = async (
+  contactId,
+  payload,
+  userId,
+  options = {},
+) => {
   const rawResult = await ContactsSchema.findByIdAndUpdate(
-    { _id: contactId },
+    { _id: contactId, userId },
     payload,
     {
       new: true,
@@ -67,14 +79,17 @@ export const updateContact = async (contactId, payload, options = {}) => {
   };
 };
 
-export const deleteContact = async (contactId) => {
+export const deleteContact = async (contactId, userId) => {
+  if (!mongoose.Types.ObjectId.isValid(contactId)) {
+    throw createHttpError(404, `Contact with id ${contactId} not found!`);
+  }
   const contact = await ContactsSchema.findByIdAndDelete({
     _id: contactId,
+    userId,
   });
-  if (!mongoose.Types.ObjectId.isValid(contactId)) {
-    return res.status(404).json({
-      status: 404,
-      message: `Contact with id ${contactId} not found!`,
-    });
-  } else return contact;
+  if (!contact) {
+    throw createHttpError(404, 'Contact not found');
+  }
+
+  return contact;
 };
