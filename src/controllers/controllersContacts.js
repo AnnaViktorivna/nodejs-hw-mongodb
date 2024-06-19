@@ -1,5 +1,5 @@
 import createHttpError from 'http-errors';
-import { Types } from 'mongoose';
+// import { Types } from 'mongoose';
 import {
   createContact,
   deleteContact,
@@ -7,7 +7,7 @@ import {
   getContactById,
   updateContact,
 } from '../services/servicesContacts.js';
-import { ContactsSchema } from '../db/contact.js';
+// import { ContactsSchema } from '../db/models/contact.js';
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 
 export const getContactsController = async (req, res) => {

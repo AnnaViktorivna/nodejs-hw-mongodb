@@ -1,5 +1,5 @@
 import createHttpError from 'http-errors';
-import { ContactsSchema } from '../db/contact.js';
+import { ContactsSchema } from '../db/models/contact.js';
 
 import mongoose from 'mongoose';
 
@@ -59,7 +59,7 @@ export const updateContact = async (
   userId,
   options = {},
 ) => {
-  const rawResult = await ContactsSchema.findByIdAndUpdate(
+  const rawResult = await ContactsSchema.findOneAndUpdate(
     { _id: contactId, userId },
     payload,
     {
@@ -83,7 +83,7 @@ export const deleteContact = async (contactId, userId) => {
   if (!mongoose.Types.ObjectId.isValid(contactId)) {
     throw createHttpError(404, `Contact with id ${contactId} not found!`);
   }
-  const contact = await ContactsSchema.findByIdAndDelete({
+  const contact = await ContactsSchema.findOneAndDelete({
     _id: contactId,
     userId,
   });
