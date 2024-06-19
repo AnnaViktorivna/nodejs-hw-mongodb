@@ -6,6 +6,7 @@ import { errorHandler } from './middlewares/errorHandler.js';
 import { notFoundHandler } from './middlewares/notFoundHandler.js';
 import rootRouter from './routers/index.js';
 import cookieParser from 'cookie-parser';
+import { ENV_VARS } from './constants/index.js';
 
 export function setupServer() {
   const app = express();
@@ -36,7 +37,8 @@ export function setupServer() {
 
   app.use(errorHandler);
 
-  const PORT = env('PORT', 3000);
+  // const PORT = env('PORT', 3000);
+  const PORT = env(ENV_VARS.PORT, 3000);
 
   app.listen(PORT, () => {
     console.log(

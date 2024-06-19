@@ -53,13 +53,17 @@ export const refreshSession = async ({ sessionId, sessionToken }) => {
     _id: sessionId,
     refreshToken: sessionToken,
   });
+
   if (!session) {
     throw createHttpError(401, 'Session not found');
   }
+
   if (Date.now() > session.refreshTokenValidUntil) {
     throw createHttpError(401, 'Session expired');
   }
+
   const user = await User.findById(session.userId);
+
   if (!user) {
     throw createHttpError(401, 'User not found');
   }
@@ -72,4 +76,23 @@ export const refreshSession = async ({ sessionId, sessionToken }) => {
     userId: user._id,
     ...createSession(),
   });
+};
+
+export const requestResetEmailPassword = async (email) => {
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    throw createHttpError(404, 'User not found');
+  }
+
+  // const resetToken = jwt.sign(
+  //   {
+  //     sub: user._id,
+  //     email,
+  //   },
+  //   env('JWT_SECRET'),
+  //   {
+  //     expiresIn: '15m',
+  //   },
+  // );
 };
