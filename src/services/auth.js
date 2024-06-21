@@ -115,7 +115,7 @@ export const requestResetEmailPassword = async (email) => {
         )}/reset-password?token=${resetToken}">Click here</a>
       </p>
     `,
-      from: env(ENV_VARS.SMTP_USER),
+      from: env(ENV_VARS.SMTP_FROM),
       to: email,
       subject: 'Reset password',
     });
