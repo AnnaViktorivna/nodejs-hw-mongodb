@@ -1,8 +1,8 @@
 import createHttpError from 'http-errors';
-import { User } from '../db/User.js';
+import { User } from '../db/models/User.js';
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
-import { Session } from '../db/session.js';
+import { Session } from '../db/models/session.js';
 
 const createSession = () => {
   return {
@@ -15,12 +15,18 @@ const createSession = () => {
 };
 
 export const createUser = async (payload) => {
+  const user = await User.findOne({ email: payload.email });
+  if (user) {
+    throw createHttpError(409, 'User already exists');
+  }
+
   const hashedPassword = await bcrypt.hash(payload.password, 10);
   return await User.create({ ...payload, password: hashedPassword });
 };
 
 export const loginUser = async ({ email, password }) => {
   const user = await User.findOne({ email });
+
   if (!user) {
     throw createHttpError(404, 'User not found');
   }
