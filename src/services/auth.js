@@ -130,16 +130,32 @@ export const resetPassword = async ({ token, password }) => {
   try {
     tokenPayload = jwt.verify(token, env(ENV_VARS.JWT_SECRET));
   } catch (err) {
+    console.log(err);
     throw createHttpError(401, err.message);
   }
+  console.log('Token payload email:', tokenPayload.email);
+  console.log('Token payload sub:', tokenPayload.sub);
 
+  // Перетворення _id у формат ObjectId
+  const userId = new ObjectId(tokenPayload.sub);
+
+  const user = await User.findOne({
+    email: tokenPayload.email,
+    _id: userId,
+  });
+
+  if (!user) {
+    throw createHttpError(404, 'User not found');
+  }
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  await User.findOneAndUpdate(
-    {
-      _id: tokenPayload.sub,
-      email: tokenPayload.email,
-    },
-    { password: hashedPassword },
-  );
+  await User.updateOne({ _id: user._id }, { password: hashedPassword });
+
+  // await User.findOneAndUpdate(
+  //   {
+  //     _id: tokenPayload.sub,
+  //     email: tokenPayload.email,
+  //   },
+  //   { password: hashedPassword },
+  // );
 };
