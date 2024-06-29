@@ -7,6 +7,7 @@ import { Session } from '../db/models/session.js';
 import { ENV_VARS } from '../constants/index.js';
 import { sendEmail } from '../utils/sendMail.js';
 import { env } from '../utils/env.js';
+import { ObjectId } from 'mongoose';
 
 const createSession = () => {
   return {
@@ -97,6 +98,7 @@ export const requestResetEmailPassword = async (email) => {
 
   const resetToken = jwt.sign(
     {
+      sub: user._id,
       email,
     },
     env(ENV_VARS.JWT_SECRET),
@@ -123,6 +125,8 @@ export const requestResetEmailPassword = async (email) => {
     console.log(err);
     throw createHttpError(500, 'Failed to send email');
   }
+
+  return { resetToken };
 };
 
 export const resetPassword = async ({ token, password }) => {
@@ -133,29 +137,35 @@ export const resetPassword = async ({ token, password }) => {
     console.log(err);
     throw createHttpError(401, err.message);
   }
-  console.log('Token payload email:', tokenPayload.email);
-  console.log('Token payload sub:', tokenPayload.sub);
 
-  // Перетворення _id у формат ObjectId
-  const userId = new ObjectId(tokenPayload.sub);
-
-  const user = await User.findOne({
-    email: tokenPayload.email,
-    _id: userId,
-  });
-
-  if (!user) {
-    throw createHttpError(404, 'User not found');
-  }
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  await User.updateOne({ _id: user._id }, { password: hashedPassword });
+  console.log('resetPassword', tokenPayload, hashedPassword);
 
-  // await User.findOneAndUpdate(
-  //   {
-  //     _id: tokenPayload.sub,
-  //     email: tokenPayload.email,
-  //   },
-  //   { password: hashedPassword },
-  // );
+  const user = await User.findOneAndUpdate(
+    {
+      _id: tokenPayload.sub,
+      email: tokenPayload.email,
+    },
+    { password: hashedPassword },
+  );
+
+  console.log('user', user);
+  return user;
 };
+
+// console.log('Token payload email:', tokenPayload.email);
+// console.log('Token payload sub:', tokenPayload.sub);
+
+// // Перетворення _id у формат ObjectId
+// const userId = new ObjectId(tokenPayload.sub);
+
+// const user = await User.findOne({
+//   email: tokenPayload.email,
+//   _id: userId,
+// });
+// if (!user) {
+//   throw createHttpError(404, 'User not found');
+// }
+
+// await User.updateOne({ _id: user._id }, { password: hashedPassword });

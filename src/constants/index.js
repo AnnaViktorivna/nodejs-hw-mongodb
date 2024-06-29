@@ -1,3 +1,5 @@
+import path from 'node:path';
+
 export const ENV_VARS = {
   PORT: 'PORT',
   MONGODB_USER: 'MONGODB_USER',
@@ -10,6 +12,16 @@ export const ENV_VARS = {
   SMTP_USER: 'SMTP_USER',
   SMTP_FROM: 'SMTP_FROM',
   SMTP_PASSWORD: 'SMTP_PASSWORD',
+
+  CLOUDINARY_NAME: 'CLOUDINARY_NAME',
+  CLOUDINARY_API_KEY: 'CLOUDINARY_API_KEY',
+  CLOUDINARY_API_SECRET: 'CLOUDINARY_API_SECRET',
+
   JWT_SECRET: 'JWT_SECRET',
+
   APP_DOMAIN: 'APP_DOMAIN',
+  BACKEND_HOST: 'BACKEND_HOST',
 };
+
+export const TEMP_UPLOAD_DIR = path.join(process.cwd(), 'temp');
+export const UPLOAD_DIR = path.join(process.cwd(), 'uploads');

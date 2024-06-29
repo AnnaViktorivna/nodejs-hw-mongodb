@@ -2,6 +2,8 @@ import createHttpError from 'http-errors';
 import { ContactsSchema } from '../db/models/contact.js';
 
 import mongoose from 'mongoose';
+import { saveFileToLocalMachine } from '../utils/saveFile.js';
+import { saveToCloudiary } from '../utils/saveToCloudiary.js';
 
 export const createPaginationInfo = (page, perPage, total) => {
   const totalPage = Math.ceil(total / perPage);
@@ -48,20 +50,29 @@ export const getContactById = async (contactId, userId) => {
   return contact;
 };
 
-export const createContact = async (payload, userId) => {
-  const contact = await ContactsSchema.create({ ...payload, userId });
+export const createContact = async ({ avatar, ...payload }, userId) => {
+  // const url = await saveFileToLocalMachine(avatar);
+  const url = await saveToCloudiary(avatar);
+
+  const contact = await ContactsSchema.create({
+    userId,
+    ...payload,
+    avatarURL: url,
+  });
+
   return contact;
 };
 
 export const updateContact = async (
-  contactId,
-  payload,
-  userId,
+  id,
+  { avatar, ...payload },
   options = {},
 ) => {
-  const rawResult = await ContactsSchema.findOneAndUpdate(
-    { _id: contactId, userId },
-    payload,
+  const url = await saveToCloudiary(avatar);
+
+  const rawResult = await ContactsSchema.findByIdAndUpdate(
+    id,
+    { ...payload, avatarURL: url },
     {
       new: true,
       includeResultMetadata: true,

@@ -6,7 +6,7 @@ import { errorHandler } from './middlewares/errorHandler.js';
 import { notFoundHandler } from './middlewares/notFoundHandler.js';
 import rootRouter from './routers/index.js';
 import cookieParser from 'cookie-parser';
-import { ENV_VARS } from './constants/index.js';
+import { ENV_VARS, UPLOAD_DIR } from './constants/index.js';
 
 export function setupServer() {
   const app = express();
@@ -30,6 +30,7 @@ export function setupServer() {
       },
     }),
   );
+  // app.use('/uploads', express.static(UPLOAD_DIR));
 
   app.use(rootRouter);
 
