@@ -59,7 +59,7 @@ export const refreshTokenController = async (req, res) => {
   res.json({
     status: 200,
     message: 'Successfully refresh token!',
-    data: { accessToken: session.accessToken },
+    data: {},
   });
 };
 
@@ -68,7 +68,7 @@ export const sendResetEmailController = async (req, res) => {
   res.json({
     message: 'Reset password email was successfully sent!',
     status: 200,
-    data: data,
+    data: {},
   });
 };
 

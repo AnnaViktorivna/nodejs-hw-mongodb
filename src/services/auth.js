@@ -122,7 +122,6 @@ export const requestResetEmailPassword = async (email) => {
       subject: 'Reset password',
     });
   } catch (err) {
-    console.log(err);
     throw createHttpError(500, 'Failed to send email');
   }
 
@@ -140,8 +139,6 @@ export const resetPassword = async ({ token, password }) => {
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  console.log('resetPassword', tokenPayload, hashedPassword);
-
   const user = await User.findOneAndUpdate(
     {
       _id: tokenPayload.sub,
@@ -150,22 +147,5 @@ export const resetPassword = async ({ token, password }) => {
     { password: hashedPassword },
   );
 
-  console.log('user', user);
   return user;
 };
-
-// console.log('Token payload email:', tokenPayload.email);
-// console.log('Token payload sub:', tokenPayload.sub);
-
-// // Перетворення _id у формат ObjectId
-// const userId = new ObjectId(tokenPayload.sub);
-
-// const user = await User.findOne({
-//   email: tokenPayload.email,
-//   _id: userId,
-// });
-// if (!user) {
-//   throw createHttpError(404, 'User not found');
-// }
-
-// await User.updateOne({ _id: user._id }, { password: hashedPassword });

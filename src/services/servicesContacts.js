@@ -57,7 +57,7 @@ export const createContact = async ({ avatar, ...payload }, userId) => {
   const contact = await ContactsSchema.create({
     userId,
     ...payload,
-    avatarURL: url,
+    photo: url,
   });
 
   return contact;
@@ -72,7 +72,7 @@ export const updateContact = async (
 
   const rawResult = await ContactsSchema.findByIdAndUpdate(
     id,
-    { ...payload, avatarURL: url },
+    { ...payload, photo: url },
     {
       new: true,
       includeResultMetadata: true,
