@@ -50,9 +50,9 @@ export const getContactById = async (contactId, userId) => {
   return contact;
 };
 
-export const createContact = async ({ avatar, ...payload }, userId) => {
+export const createContact = async ({ photo, ...payload }, userId) => {
   // const url = await saveFileToLocalMachine(avatar);
-  const url = await saveToCloudiary(avatar);
+  const url = await saveToCloudiary(photo);
 
   const contact = await ContactsSchema.create({
     userId,
@@ -65,10 +65,10 @@ export const createContact = async ({ avatar, ...payload }, userId) => {
 
 export const updateContact = async (
   id,
-  { avatar, ...payload },
+  { photo, ...payload },
   options = {},
 ) => {
-  const url = await saveToCloudiary(avatar);
+  const url = await saveToCloudiary(photo);
 
   const rawResult = await ContactsSchema.findByIdAndUpdate(
     id,
@@ -94,7 +94,7 @@ export const deleteContact = async (contactId, userId) => {
   if (!mongoose.Types.ObjectId.isValid(contactId)) {
     throw createHttpError(404, `Contact with id ${contactId} not found!`);
   }
-  const contact = await ContactsSchema.findOneAndDelete({
+  const contact = await ContactsSchema.findByIdAndDelete({
     _id: contactId,
     userId,
   });
