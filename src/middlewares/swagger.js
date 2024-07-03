@@ -3,11 +3,13 @@ import fs from 'node:fs';
 import swaggerUi from 'swagger-ui-express';
 import { SWAGGER_PATH } from '../constants/index.js';
 
+// import path from 'node:path';
+
 export const swagger = () => {
   try {
     const swaggerDocument = JSON.parse(
-      fs.readFileSync(SWAGGER_PATH),
-    ).toString();
+      fs.readFileSync(SWAGGER_PATH).toString(),
+    );
     return [...swaggerUi.serve, swaggerUi.setup(swaggerDocument)];
   } catch (err) {
     return (req, res, next) =>

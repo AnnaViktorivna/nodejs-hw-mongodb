@@ -10,10 +10,17 @@ import cookieParser from 'cookie-parser';
 import { ENV_VARS, UPLOAD_DIR } from './constants/index.js';
 import { swagger } from './middlewares/swagger.js';
 
+// import { swagger } from './middlewares/swagger.js';
+
 export function setupServer() {
   const app = express();
 
   app.use('/api-docs', swagger());
+  // Assuming your swagger.json is located in 'docs' directory
+  // app.use(
+  //   '/swagger.json',
+  //   express.static(path.join(process.cwd(), 'docs', 'swagger.json')),
+  // );
 
   app.use(cors());
   app.use(cookieParser());
@@ -43,7 +50,7 @@ export function setupServer() {
   app.use(errorHandler);
 
   // const PORT = env('PORT', 3000);
-  const PORT = env(ENV_VARS.PORT, 3000);
+  const PORT = env(ENV_VARS.PORT, 5050);
 
   app.listen(PORT, () => {
     console.log(
