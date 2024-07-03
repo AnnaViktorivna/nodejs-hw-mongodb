@@ -1,4 +1,5 @@
 import cors from 'cors';
+
 import express from 'express';
 import pino from 'pino-http';
 import { env } from './utils/env.js';
@@ -7,9 +8,12 @@ import { notFoundHandler } from './middlewares/notFoundHandler.js';
 import rootRouter from './routers/index.js';
 import cookieParser from 'cookie-parser';
 import { ENV_VARS, UPLOAD_DIR } from './constants/index.js';
+import { swagger } from './middlewares/swagger.js';
 
 export function setupServer() {
   const app = express();
+
+  app.use('/api-docs', swagger());
 
   app.use(cors());
   app.use(cookieParser());
@@ -23,13 +27,13 @@ export function setupServer() {
     ),
   );
 
-  app.use(
-    pino({
-      transport: {
-        target: 'pino-pretty',
-      },
-    }),
-  );
+  // app.use(
+  //   pino({
+  //     transport: {
+  //       target: 'pino-pretty',
+  //     },
+  //   }),
+  // );
   // app.use('/uploads', express.static(UPLOAD_DIR));
 
   app.use(rootRouter);
