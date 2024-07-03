@@ -5,8 +5,7 @@ info:
   license:
     name: Apache 2.0
     url: <http://www.apache.org/licenses/LICENSE-2.0.html>
-  description: >
-    This is a documentation of  app
+  description: This is a documentation of  app
 tags:
   - name: Contacts
     description: Operations about users.
@@ -14,18 +13,23 @@ tags:
     description: Auth operations.
 servers:
   - url: http://localhost:5050
-  - url: https://example.com/api/v1
+  # - url: https://example.com/api/v1
   # - url: #посилання на задеплоєний сайт
 paths:
-  # /contacts:
-  #     get:
-  #       $ref: ../swagger/paths/contacts/get.yaml #додаємо ще один шлях
   /contacts:
+    #     get:
+    #       $ref: ../swagger/paths/contacts/get.yaml  #додаємо ще один шлях
     post:
-      $ref: ../swagger/paths/contacts/post.yaml #додаємо ще один шлях
+      $ref: ../swagger/paths/contacts/post.yaml
+    get:
+      $ref: ../swagger/paths/contacts/getAll.yaml
   /contacts/{id}:
     get:
       $ref: ../swagger/paths/contacts/{id}/get.yaml
+    patch:
+      $ref: ../swagger/paths/contacts/{id}/patch.yaml
+    delete:
+      $ref: ../swagger/paths/contacts/{id}/delete.yaml
 components:
   securitySchemes:
     bearerAuth:
